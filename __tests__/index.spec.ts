@@ -12,7 +12,7 @@ import {
 } from "../src";
 
 import { EventEmitter } from "events";
-import { Socket as _Socket } from "jmp";
+import { Socket as _Socket } from "@runtimed/jmp";
 import * as zmq from "zeromq";
 
 type Socket = typeof _Socket &

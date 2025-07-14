@@ -1,4 +1,4 @@
-declare module "jmp" {
+declare module "@runtimed/jmp" {
   import zmq from "zeromq";
 
   export interface MessageProperties {

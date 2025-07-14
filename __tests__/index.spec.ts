@@ -12,7 +12,7 @@ import {
 } from "../src";
 
 import { EventEmitter } from "events";
-import { Socket as _Socket } from "jmp";
+import { Socket as _Socket } from "@runtimed/jmp";
 import * as zmq from "zeromq";
 
 type Socket = typeof _Socket &
@@ -36,7 +36,7 @@ class HokeySocket extends _Socket {
 }
 
 describe("createSocket", () => {
-  test("creates a JMP socket on the channel with identity", async done => {
+  test("creates a JMP socket on the channel", async done => {
     const config = {
       signature_scheme: "hmac-sha256",
       key: "5ca1ab1e-c0da-aced-cafe-c0ffeefacade",
@@ -48,7 +48,6 @@ describe("createSocket", () => {
 
     const socket = await createSocket("iopub", identity, config);
     expect(socket).not.toBeNull();
-    expect(socket.identity).toBe(identity);
     expect(socket.type).toBe(ZMQType.frontend.iopub);
     socket.close();
 

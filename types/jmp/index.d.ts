@@ -36,7 +36,7 @@ declare module "@runtimed/jmp" {
 
     send(message: Message | string | Buffer | any[], flags?: number): this;
 
-    emit(type: string, data?: any): this;
+    emit(type: string | symbol, ...args: any[]): boolean;
 
     // actually provided by zeromq but types are wrong
     unmonitor(): this;

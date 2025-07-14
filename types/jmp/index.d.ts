@@ -1,5 +1,5 @@
-declare module "jmp" {
-  import zmq from "zeromq";
+declare module "@runtimed/jmp" {
+  import zmq from "zeromq/v5-compat";
 
   export interface MessageProperties {
     idents: any[];
@@ -7,7 +7,7 @@ declare module "jmp" {
     parent_header: object;
     metadata: object;
     content: object;
-    buffers: Uint8Array | null;
+    buffers: (ArrayBuffer | ArrayBufferView)[] | null;
   }
 
   export class Message {
@@ -18,7 +18,7 @@ declare module "jmp" {
     parent_header: object;
     metadata: object;
     content: object;
-    buffers: Uint8Array;
+    buffers: (ArrayBuffer | ArrayBufferView)[];
 
     respond(
       socket: Socket,
@@ -36,7 +36,7 @@ declare module "jmp" {
 
     send(message: Message | string | Buffer | any[], flags?: number): this;
 
-    emit(type: string, data?: any): this;
+    emit(type: string | symbol, ...args: any[]): boolean;
 
     // actually provided by zeromq but types are wrong
     unmonitor(): this;

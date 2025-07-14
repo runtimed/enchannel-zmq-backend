@@ -12,7 +12,7 @@ import {
 } from "../src";
 
 import { EventEmitter } from "events";
-import { Socket as _Socket } from "jmp";
+import { Socket as _Socket } from "@runtimed/jmp";
 import * as zmq from "zeromq";
 
 type Socket = typeof _Socket &
@@ -36,7 +36,7 @@ class HokeySocket extends _Socket {
 }
 
 describe("createSocket", () => {
-  test("creates a JMP socket on the channel with identity", async done => {
+  test("creates a JMP socket on the channel with identity", async () => {
     const config = {
       signature_scheme: "hmac-sha256",
       key: "5ca1ab1e-c0da-aced-cafe-c0ffeefacade",
@@ -47,17 +47,21 @@ describe("createSocket", () => {
     const identity = uuid();
 
     const socket = await createSocket("iopub", identity, config);
-    expect(socket).not.toBeNull();
-    expect(socket.identity).toBe(identity);
-    expect(socket.type).toBe(ZMQType.frontend.iopub);
-    socket.close();
-
-    done();
+    try {
+      expect(socket).not.toBeNull();
+      expect(socket.identity).toBe(identity);
+      expect(socket.type).toBe(ZMQType.frontend.iopub);
+    } finally {
+      socket.close();
+      await new Promise(resolve => {
+        socket.on('close', resolve);
+      })
+    }
   });
 });
 
 describe("verifiedConnect", () => {
-  test("verifiedConnect monitors the socket", async done => {
+  test("verifiedConnect monitors the socket", async () => {
     const emitter = new EventEmitter();
 
     const socket = {
@@ -84,11 +88,9 @@ describe("verifiedConnect", () => {
 
     await p;
     expect(socket.unmonitor).toHaveBeenCalledTimes(1);
-
-    done();
   });
 
-  test("verifiedConnect monitors the socket properly even on fast connect", async done => {
+  test("verifiedConnect monitors the socket properly even on fast connect", () => {
     const emitter = new EventEmitter();
 
     const socket = {
@@ -108,7 +110,6 @@ describe("verifiedConnect", () => {
     expect(socket.connect).toHaveBeenCalledTimes(1);
     expect(socket.unmonitor).toHaveBeenCalledTimes(1);
     expect(socket.connect).toHaveBeenCalledWith("tcp://127.0.0.1:8945");
-    done();
   });
 });
 
@@ -208,7 +209,7 @@ describe("createMainChannelFromSockets", () => {
     });
   });
 
-  test("propagates header information through", async done => {
+  test("propagates header information through", async () => {
     const shellSocket = new HokeySocket();
     const iopubSocket = new HokeySocket();
     const sockets = {
@@ -249,7 +250,6 @@ describe("createMainChannelFromSockets", () => {
         msg_type: "random" as MessageType,
         date: new Date().toISOString(),
         msg_id: "XYZ",
-
         // NOTE: we'll be checking that we use the set username for the
         //       channels, no overrides
         username: "kitty"
@@ -285,7 +285,5 @@ describe("createMainChannelFromSockets", () => {
       { channel: "shell", yolo: false },
       { channel: "iopub", yolo: true }
     ]);
-
-    done();
   });
 });

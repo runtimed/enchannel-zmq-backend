@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import * as jmp from "jmp";
+import * as jmp from "@runtimed/jmp";
 
 class Socket extends EventEmitter {
   throttle = false;

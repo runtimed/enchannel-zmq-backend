@@ -1,6 +1,7 @@
 import { Channels, JupyterMessage } from "@nteract/messaging";
 import * as moduleJMP from "@runtimed/jmp";
 import { fromEvent, merge, Observable, Subject, Subscriber } from "rxjs";
+import { FromEventTarget } from "rxjs/internal/observable/fromEvent";
 import { map, publish, refCount } from "rxjs/operators";
 import { v4 as uuid } from "uuid";
 
@@ -245,7 +246,7 @@ export const createMainChannelFromSockets = (
       return fromEvent(
         // Pending a refactor around jmp, this allows us to treat the socket
         // as a normal event emitter
-        (socket as unknown) as EventTarget,
+        (socket as unknown) as FromEventTarget<JupyterMessage>,
         "message"
       ).pipe(
         map(

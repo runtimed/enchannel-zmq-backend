@@ -1,5 +1,5 @@
-declare module "jmp" {
-  import zmq from "zeromq";
+declare module "@runtimed/jmp" {
+  import zmq from "zeromq/v5-compat";
 
   export interface MessageProperties {
     idents: any[];

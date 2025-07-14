@@ -1,5 +1,5 @@
 declare module "@runtimed/jmp" {
-  import zmq from "zeromq";
+  import zmq from "zeromq/v5-compat";
 
   export interface MessageProperties {
     idents: any[];
@@ -7,7 +7,7 @@ declare module "@runtimed/jmp" {
     parent_header: object;
     metadata: object;
     content: object;
-    buffers: Uint8Array | null;
+    buffers: (ArrayBuffer | ArrayBufferView)[] | null;
   }
 
   export class Message {
@@ -18,7 +18,7 @@ declare module "@runtimed/jmp" {
     parent_header: object;
     metadata: object;
     content: object;
-    buffers: Uint8Array;
+    buffers: (ArrayBuffer | ArrayBufferView)[];
 
     respond(
       socket: Socket,
